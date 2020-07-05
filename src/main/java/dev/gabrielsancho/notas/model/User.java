@@ -1,5 +1,7 @@
 package dev.gabrielsancho.notas.model;
 
+import dev.gabrielsancho.notas.dtos.RegisterUserDTO;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +19,16 @@ public class User {
     private String email;
 
     private String password;
+
+    public User() {
+
+    }
+
+    public User(RegisterUserDTO registerUserDTO) {
+        this.name = registerUserDTO.getName();
+        this.email = registerUserDTO.getEmail();
+        this.password = registerUserDTO.getPassword();
+    }
 
 //    @ManyToMany()
 //    @JoinTable(
