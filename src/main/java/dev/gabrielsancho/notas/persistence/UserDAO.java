@@ -37,7 +37,6 @@ public class UserDAO {
         }
     }
 
-
     public User register(RegisterUserDTO registerUserDTO) throws Exception{
         EntityManager em = HibernateUtils.createEntityManager();
 
