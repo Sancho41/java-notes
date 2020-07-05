@@ -59,7 +59,7 @@ public class AuthResource {
     public Response register(RegisterUserDTO registerUserDTO) {
         try {
             User user = service.registra(registerUserDTO);
-            return Response.status(Response.Status.CREATED).entity("created").build();
+            return Response.status(Response.Status.CREATED).entity(user).build();
         } catch (Exception e) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("register failed").build();
         }
