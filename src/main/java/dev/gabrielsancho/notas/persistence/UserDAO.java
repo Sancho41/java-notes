@@ -42,9 +42,7 @@ public class UserDAO {
 
         try {
 
-        em.getTransaction().begin();
-
-        try {
+            em.getTransaction().begin();
             User newUser = new User(registerUserDTO);
             if (!registerUserDTO.passwordMatch()) {
                 throw new Exception("Password confirmation do not match");
