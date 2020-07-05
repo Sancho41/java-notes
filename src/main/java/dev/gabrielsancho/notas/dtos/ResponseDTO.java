@@ -4,6 +4,9 @@ public class ResponseDTO {
     private Integer stauts;
     private Object data;
 
+    public ResponseDTO() {
+    }
+
     public ResponseDTO(Integer stauts, Object data) {
         this.stauts = stauts;
         this.data = data;

@@ -1,42 +1,30 @@
 package dev.gabrielsancho.notas.dtos;
 
 public class LoginDTO {
-    private String login;
-    private String senha;
-    private String token;
+    private String email;
+    private String password;
 
-    public LoginDTO(String login, String senha) {
-        this.login = login;
-        this.senha = senha;
+    public LoginDTO() {
     }
 
-    public LoginDTO(String login, String senha, String token) {
-        this.login = login;
-        this.senha = senha;
-        this.token = token;
+    public LoginDTO(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
-    public String getToken() {
-        return token;
+    public String getEmail() {
+        return email;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getLogin() {
-        return login;
+    public String getPassword() {
+        return password;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

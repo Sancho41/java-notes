@@ -3,6 +3,9 @@ package dev.gabrielsancho.notas.dtos;
 public class TokenDTO {
     private String token;
 
+    public TokenDTO() {
+    }
+
     public TokenDTO(String token) {
         this.token = token;
     }
