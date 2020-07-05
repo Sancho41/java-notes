@@ -1,7 +1,6 @@
 package dev.gabrielsancho.notas.filters;
 
 import dev.gabrielsancho.notas.dtos.ResponseDTO;
-import org.json.JSONObject;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -15,7 +14,7 @@ public class ResponseFormatFilter implements ContainerResponseFilter {
         if (request.getMethod().equals("OPTIONS"))
             return;
 
-        ResponseDTO responseDTO = new ResponseDTO(response.getStatus(), response.getEntity().toString());
+        ResponseDTO responseDTO = new ResponseDTO(response.getStatus(), response.getEntity());
 
         response.setEntity(responseDTO);
     }
