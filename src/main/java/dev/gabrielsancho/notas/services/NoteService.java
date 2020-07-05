@@ -1,5 +1,6 @@
 package dev.gabrielsancho.notas.services;
 
+import dev.gabrielsancho.notas.dtos.NoteDTO;
 import dev.gabrielsancho.notas.model.Note;
 import dev.gabrielsancho.notas.model.User;
 import dev.gabrielsancho.notas.persistence.NoteDAO;
@@ -22,70 +23,26 @@ public class NoteService {
     }
 
     public List<Note> publicNotes() {
-        EntityManager em = createEntityManager();
-        String jpql = "Select n from Note n where n.is_public = true";
-        TypedQuery<Note> query = em.createQuery(jpql, Note.class);
-        query.setMaxResults(10);
-        List<Note> notes = query.getResultList();
-        em.close();
-        return notes;
+        return dao.getPublicNotes();
     }
 
-
-
-    public Note create(Note note, User loggedUser) {
-        EntityManager em = createEntityManager();
-        note.setUser(loggedUser);
-        em.getTransaction().begin();
-        em.persist(note);
-        em.getTransaction().commit();
-        em.close();
-        return note;
+    public Note create(NoteDTO note, User loggedUser) throws Exception {
+        return dao.create(new Note(note, loggedUser));
     }
 
     public Note getNote(Long id) {
-        EntityManager em = createEntityManager();
-        return em.find(Note.class, id);
+        return dao.getNoteById(id);
     }
 
     public Note updateNote(Note note, User loggedUser) throws Exception {
-        EntityManager em = createEntityManager();
-
-        Note testNote = em.find(Note.class, note.getId());
-
-        if (testNote.getUser().equals(loggedUser)) {
-
-            // Tornar user imutável
-            note.setUser(loggedUser);
-
-            em.getTransaction().begin();
-            em.merge(note);
-            em.getTransaction().commit();
-            em.close();
-            return note;
-        }
-
-        throw new Exception("not authorized");
+        return dao.update(note, loggedUser);
     }
 
     public void deleteNote(Long id, User loggedUser) throws Exception {
-        EntityManager em = createEntityManager();
-
-        Note note = em.find(Note.class, id);
-
-        if (note.getUser().equals(loggedUser))
-        {
-            em.getTransaction().begin();
-            em.remove(note);
-            em.getTransaction().commit();
-            em.close();
-            return;
-        }
-        throw new Exception("not authorized");
+        dao.delete(id, loggedUser);
     }
 
     public List<Note> userNotes(User loggedUser) {
-
         return dao.getUserNotes(loggedUser);
     }
 
