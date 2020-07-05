@@ -1,6 +1,7 @@
 package dev.gabrielsancho.notas.dtos;
 
 public class ResponseDTO {
+
     private Integer stauts;
     private Object data;
 

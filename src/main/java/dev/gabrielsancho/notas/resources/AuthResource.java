@@ -1,6 +1,7 @@
 package dev.gabrielsancho.notas.resources;
 
 import dev.gabrielsancho.notas.dtos.LoginDTO;
+import dev.gabrielsancho.notas.dtos.RegistroDTO;
 import dev.gabrielsancho.notas.dtos.TokenDTO;
 import dev.gabrielsancho.notas.model.User;
 import dev.gabrielsancho.notas.security.TokenSecurity;
@@ -58,10 +59,10 @@ public class AuthResource {
     @Path("register")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response register(JsonObject userJSON) {
+    public Response register(RegistroDTO registro) {
         try {
-            User user = service.registra(userJSON);
-            return Response.status(Response.Status.CREATED).build();
+            User user = service.registra(registro);
+            return Response.status(Response.Status.CREATED).entity(user).build();
         } catch (Exception e) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("register failed").build();
         }

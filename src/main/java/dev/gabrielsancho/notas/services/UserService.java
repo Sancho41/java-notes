@@ -2,6 +2,7 @@ package dev.gabrielsancho.notas.services;
 
 import com.google.gson.Gson;
 import dev.gabrielsancho.notas.dtos.LoginDTO;
+import dev.gabrielsancho.notas.dtos.RegistroDTO;
 import dev.gabrielsancho.notas.model.User;
 import dev.gabrielsancho.notas.persistence.UserDAO;
 import dev.gabrielsancho.notas.security.TokenSecurity;
@@ -21,26 +22,9 @@ public class UserService {
         return dao.autentica(loginDTO);
     }
 
-    public User registra(JsonObject userJSON) throws Exception {
-        EntityManager em = HibernateUtils.createEntityManager();
-
-        String password = userJSON.getString("password");
-        String password_confirmation = userJSON.getString("password_confirmation");
-
-        if (password.equals(password_confirmation)) {
-            Gson gson = new Gson();
-            User user = gson.fromJson(userJSON.toString(), User.class);
-
-            em.getTransaction().begin();
-            em.persist(user);
-            em.getTransaction().commit();
-            em.close();
-
-            return user;
-        }
-        throw new Exception("Register failed exception");
+    public User registra(RegistroDTO registroDTO) throws Exception {
+        return dao.registra(registroDTO);
     }
-
 
 
     public User getLoggedUser(HttpHeaders headers) throws Exception {
