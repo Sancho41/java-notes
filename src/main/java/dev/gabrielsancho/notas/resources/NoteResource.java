@@ -1,5 +1,6 @@
 package dev.gabrielsancho.notas.resources;
 
+import dev.gabrielsancho.notas.dtos.NoteDTO;
 import dev.gabrielsancho.notas.model.Note;
 import dev.gabrielsancho.notas.model.User;
 import dev.gabrielsancho.notas.services.NoteService;
@@ -48,11 +49,10 @@ public class NoteResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response store(@Context HttpHeaders headers, Note note) {
+    public Response store(@Context HttpHeaders headers, NoteDTO noteDTO) {
         try {
             User loggedUser = userService.getLoggedUser(headers);
-            JSONObject object = new JSONObject(service.create(note, loggedUser));
-            return Response.ok(object).build();
+            return Response.ok(service.create(noteDTO, loggedUser)).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\": \"bad_request\"}").build();
         }
@@ -66,21 +66,16 @@ public class NoteResource {
         Note note = service.getNote(id);
 
         try {
-            if (note.isIs_public())
-                return Response.ok().entity(new JSONObject(note)).build();
+            if (note.isIs_public()) {
+                return Response.ok(note).build();
+            } else {
+                User loggedUser = userService.getLoggedUser(servletRequest);
+                if (note.getUser().equals(loggedUser))
+                    return Response.ok(note).build();
+                throw new Exception("Not authorized");
+            }
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\": \"not_found\"}")
-                    .build();
-        }
-
-        try {
-            User loggedUser = userService.getLoggedUser(servletRequest);
-            if (note.getUser().equals(loggedUser))
-                return Response.ok().entity(new JSONObject(note)).build();
-            throw new Exception("Unauthorized");
-        } catch (Exception e) {
-            return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\": \"not_found\"}")
                     .build();
         }
@@ -92,12 +87,10 @@ public class NoteResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response update(@Context HttpHeaders headers, @PathParam("id") Long id, Note note) throws Exception {
         try {
-        User loggedUser = userService.getLoggedUser(headers);
-        JSONObject object = new JSONObject(service.updateNote(note, loggedUser));
-        return Response.ok(object).build();
+            User loggedUser = userService.getLoggedUser(headers);
+            return Response.ok(service.updateNote(note, loggedUser)).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .build();
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
 
@@ -108,9 +101,8 @@ public class NoteResource {
     public Response delete(@Context HttpHeaders headers, @PathParam("id") Long id) {
         try {
             User loggedUser = userService.getLoggedUser(headers);
-
             service.deleteNote(id, loggedUser);
-            return Response.ok().entity("{\"success\": \"deleted\"}").build();
+            return Response.ok("{\"success\": \"deleted\"}").build();
         } catch (Exception e) {
             JSONObject object = new JSONObject();
             object.put("error", "unauthorized");
