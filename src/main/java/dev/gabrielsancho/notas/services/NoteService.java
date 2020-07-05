@@ -2,6 +2,7 @@ package dev.gabrielsancho.notas.services;
 
 import dev.gabrielsancho.notas.model.Note;
 import dev.gabrielsancho.notas.model.User;
+import dev.gabrielsancho.notas.persistence.NoteDAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NoteService {
+
+    public final NoteDAO dao = new NoteDAO();
 
 
     private EntityManager createEntityManager () {
@@ -82,15 +85,8 @@ public class NoteService {
     }
 
     public List<Note> userNotes(User loggedUser) {
-        EntityManager em = createEntityManager();
 
-        String jpql = "Select n from Note n where n.user = :pUser";
-        TypedQuery<Note> query = em.createQuery(jpql, Note.class);
-        query.setParameter("pUser", loggedUser);
-
-        List<Note> notes = query.getResultList();
-        em.close();
-        return notes;
+        return dao.getUserNotes(loggedUser);
     }
 
     public Note favorite(User loggedUser, Note note) throws Exception {
