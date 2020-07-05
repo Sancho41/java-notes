@@ -5,8 +5,6 @@ import dev.gabrielsancho.notas.filters.CorsFilter;
 import dev.gabrielsancho.notas.filters.ResponseFormatFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import javax.ws.rs.ApplicationPath;
-
 //@ApplicationPath("api")
 public class RestApplicationConfig extends ResourceConfig {
 

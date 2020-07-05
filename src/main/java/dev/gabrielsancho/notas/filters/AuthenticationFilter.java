@@ -1,10 +1,6 @@
 package dev.gabrielsancho.notas.filters;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.LinkedHashMap;
-import java.util.List;
+import dev.gabrielsancho.notas.security.TokenSecurity;
 
 import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
@@ -16,9 +12,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-
-import dev.gabrielsancho.notas.security.TokenSecurity;
-import org.jose4j.jwt.consumer.InvalidJwtException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The AuthenticationFilter verifies the access permissions for a user based on the provided jwt token

@@ -1,7 +1,10 @@
 package dev.gabrielsancho.notas.model;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class User {
