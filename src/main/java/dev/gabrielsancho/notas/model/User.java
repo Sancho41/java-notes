@@ -25,6 +25,16 @@ public class User {
 //            inverseJoinColumns = @JoinColumn(name = "note_id"))
 //    private List<Note> notesFavorited = new ArrayList<>();
 
+
+    public User() {
+    }
+
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
     public Long getId() {
         return id;
     }

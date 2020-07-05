@@ -41,10 +41,7 @@ public class UserDAO {
         try {
 
             if (registroDTO.getPassword().equals(registroDTO.getPassword_confirmation())) {
-                User payload = new User();
-                payload.setEmail(registroDTO.getEmail());
-                payload.setName(registroDTO.getName());
-                payload.setPassword(registroDTO.getPassword());
+                User payload = new User(registroDTO.getName(), registroDTO.getEmail(), registroDTO.getPassword());
 
                 em.getTransaction().begin();
                 em.persist(payload);
