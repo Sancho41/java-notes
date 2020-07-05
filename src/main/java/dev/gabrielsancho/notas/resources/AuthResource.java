@@ -1,6 +1,7 @@
 package dev.gabrielsancho.notas.resources;
 
 import dev.gabrielsancho.notas.dtos.LoginDTO;
+import dev.gabrielsancho.notas.dtos.RegisterUserDTO;
 import dev.gabrielsancho.notas.dtos.TokenDTO;
 import dev.gabrielsancho.notas.model.User;
 import dev.gabrielsancho.notas.security.TokenSecurity;
@@ -8,7 +9,6 @@ import dev.gabrielsancho.notas.services.UserService;
 import org.glassfish.jersey.process.internal.RequestScoped;
 
 import javax.annotation.security.PermitAll;
-import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -18,7 +18,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("auth")
+@Path("/")
 @RequestScoped
 public class AuthResource {
 
@@ -48,7 +48,6 @@ public class AuthResource {
                     )
             ).build();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return Response.status(Response.Status.UNAUTHORIZED).entity("login failed").build();
         }
     }
@@ -57,11 +56,10 @@ public class AuthResource {
     @PermitAll
     @Path("register")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response register(JsonObject userJSON) {
+    public Response register(RegisterUserDTO registerUserDTO) {
         try {
-            User user = service.registra(userJSON);
-            return Response.status(Response.Status.CREATED).build();
+            User user = service.registra(registerUserDTO);
+            return Response.status(Response.Status.CREATED).entity("created").build();
         } catch (Exception e) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("register failed").build();
         }
