@@ -14,6 +14,8 @@ public class ResponseFormatFilter implements ContainerResponseFilter {
         if (request.getMethod().equals("OPTIONS"))
             return;
 
+        // TODO: Adicionar tratamento para entity null
+
         ResponseDTO responseDTO = new ResponseDTO(response.getStatus(), response.getEntity());
 
         response.setEntity(responseDTO);
