@@ -1,10 +1,11 @@
 package dev.gabrielsancho.notas.resources;
 
+import dev.gabrielsancho.notas.dtos.LoginDTO;
+import dev.gabrielsancho.notas.dtos.TokenDTO;
 import dev.gabrielsancho.notas.model.User;
 import dev.gabrielsancho.notas.security.TokenSecurity;
 import dev.gabrielsancho.notas.services.UserService;
 import org.glassfish.jersey.process.internal.RequestScoped;
-import org.json.JSONObject;
 
 import javax.annotation.security.PermitAll;
 import javax.json.JsonObject;
@@ -37,16 +38,15 @@ public class AuthResource {
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(JsonObject usuario) {
+    public Response login(LoginDTO loginDTO) {
         try {
-
-            User user = service.autentica(usuario);
-            String token = TokenSecurity.generateJwtToken(Long.toString(user.getId()));
-
-            JSONObject object = new JSONObject();
-            object.put("token", token);
-
-            return Response.ok(object).build();
+            User user = service.autentica(loginDTO);
+            return Response.ok(
+                    new TokenDTO(
+                            TokenSecurity
+                                    .generateJwtToken(Long.toString(user.getId()))
+                    )
+            ).build();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return Response.status(Response.Status.UNAUTHORIZED).entity("login failed").build();
