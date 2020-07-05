@@ -1,5 +1,7 @@
 package dev.gabrielsancho.notas.model;
 
+import dev.gabrielsancho.notas.dtos.NoteDTO;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,6 +17,17 @@ public class Note {
     @JoinColumn
     @ManyToOne
     private User user;
+
+    public Note() {
+    }
+
+    public Note(NoteDTO note, User loggedUser) {
+        this.title = note.getTitle();
+        this.text = note.getText();
+        this.is_public = note.getIs_public();
+        this.color = note.getColor();
+        this.user = loggedUser;
+    }
 
 //    @ManyToMany(mappedBy = "notesFavorited")
 //    private List<User> favorited = new ArrayList<>();
