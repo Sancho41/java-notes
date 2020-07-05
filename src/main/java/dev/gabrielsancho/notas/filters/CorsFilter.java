@@ -12,33 +12,32 @@ import java.io.IOException;
 public class CorsFilter implements ContainerResponseFilter, ContainerRequestFilter {
 
     @Override
-    public void filter(ContainerRequestContext requestContext,
-                       ContainerResponseContext responseContext) throws IOException {
+    public void filter(ContainerRequestContext request) throws IOException {
 
-        if (requestContext.getHeaderString("Origin") == null) {
-            return;
+        if (isPreFlightRequest(request)) {
+            request.abortWith(Response.ok().build());
         }
+    }
 
-        if (requestFromOriginOptions(requestContext)) {
-            responseContext.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-            responseContext.getHeaders().add("Access-Control-Allow-Headers",
-                    "X-Requested-With, Authorization, X-Powered-By," + "Accept-Version, Content-MD5, CSRF-Token, Content-Type");
-        }
-
-        String origin = "http://localhost:3000";
-        responseContext.getHeaders().add("Access-Control-Allow-Credentials", "true");
-        responseContext.getHeaders().add("Access-Control-Allow-Origin", origin);
-        responseContext.getHeaders().add("Access-Control-Expose-Headers", "Content-type, Content-Disposition, X-Suggested-Filename");
+    public static Boolean isPreFlightRequest(ContainerRequestContext req) {
+        return req.getHeaderString("Origin") != null && req.getMethod().equalsIgnoreCase("OPTIONS");
     }
 
     @Override
-    public void filter(ContainerRequestContext req) throws IOException {
-        if (requestFromOriginOptions(req)) {
-            req.abortWith(Response.ok().build());
+    public void filter(ContainerRequestContext request, ContainerResponseContext response) throws IOException {
+        if (request.getHeaderString("Origin") == null) {
+            return;
         }
-    }
 
-    public static Boolean requestFromOriginOptions(ContainerRequestContext req) {
-        return req.getHeaderString("Origin") != null && req.getMethod().equalsIgnoreCase("OPTIONS");
+        response.getHeaders().add("Access-Control-Allow-Credentials", "true");
+
+        String origin = request.getHeaderString("Origin");
+        response.getHeaders().add("Access-Control-Allow-Origin", origin);
+
+        response.getHeaders().add("Access-Control-Allow-Methods",
+                "GET, POST, PUT, DELETE, OPTIONS, HEAD, PATCH");
+
+        response.getHeaders().add("Access-Control-Allow-Headers",
+                "X-Requested-With, Authorization, Accept-Version, Content-MD5, CSRF-Token, Content-Type");
     }
 }

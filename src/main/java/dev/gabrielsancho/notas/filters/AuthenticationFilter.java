@@ -39,11 +39,14 @@ public class AuthenticationFilter implements javax.ws.rs.container.ContainerRequ
     private static final String ACCESS_INVALID_TOKEN = "Token invalid. Please authenticate again!";
     private static final String ACCESS_DENIED = "Not allowed to access this resource!";
     private static final String ACCESS_FORBIDDEN = "Access forbidden!";
-
     @Override
     public void filter(ContainerRequestContext requestContext) {
         Method method = resourceInfo.getResourceMethod();
         // everybody can access (e.g. user/create or user/authenticate)
+
+
+        if (requestContext.getMethod().equals("OPTIONS"))
+            return;
 
 
         if (!method.isAnnotationPresent(PermitAll.class)) {

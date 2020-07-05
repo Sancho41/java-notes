@@ -4,6 +4,7 @@ import dev.gabrielsancho.notas.model.User;
 import dev.gabrielsancho.notas.security.TokenSecurity;
 import dev.gabrielsancho.notas.services.UserService;
 import org.glassfish.jersey.process.internal.RequestScoped;
+import org.json.JSONObject;
 
 import javax.annotation.security.PermitAll;
 import javax.json.JsonObject;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -40,7 +42,11 @@ public class AuthResource {
 
             User user = service.autentica(usuario);
             String token = TokenSecurity.generateJwtToken(Long.toString(user.getId()));
-            return Response.ok(String.format("{\"token\": \"%s\"}", token)).build();
+
+            JSONObject object = new JSONObject();
+            object.put("token", token);
+
+            return Response.ok(object).build();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return Response.status(Response.Status.UNAUTHORIZED).entity("login failed").build();
@@ -66,5 +72,17 @@ public class AuthResource {
     @Path("logout")
     public String logout(User user) {
         return servletRequest.getHeader("Authorization");
+    }
+
+    @GET
+    @Path("user")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response user(@Context HttpHeaders headers) {
+        try {
+            User loggedUser = service.getLoggedUser(headers);
+            return Response.ok(loggedUser).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Not authenticated").build();
+        }
     }
 }
