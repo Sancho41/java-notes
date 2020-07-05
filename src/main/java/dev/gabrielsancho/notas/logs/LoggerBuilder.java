@@ -1,7 +1,5 @@
 package dev.gabrielsancho.notas.logs;
 
-import java.time.LocalDate;
-
 public class LoggerBuilder {
 
     private String text;
@@ -28,7 +26,7 @@ public class LoggerBuilder {
     }
 
     public static LoggerBuilder ERROR(String text, Exception e) {
-        LoggerBuilder builder =  new LoggerBuilder("[ERROR] - "+text+ e.getMessage());
+        LoggerBuilder builder =  new LoggerBuilder("[ERROR] - "+text+" "+ e.getMessage());
         builder.setLogType(LogType.ERROR);
         builder.setExceptionHandle(e);
         return builder;
