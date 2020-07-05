@@ -1,5 +1,7 @@
 package dev.gabrielsancho.notas.logs;
 
+import dev.gabrielsancho.notas.utils.ConsoleColorsUtils;
+
 public class LoggerBuilder {
 
     private String text;
@@ -20,13 +22,23 @@ public class LoggerBuilder {
     }
 
     public static LoggerBuilder INFO(String text){
-        LoggerBuilder builder =  new LoggerBuilder("[INFO]  - "+text);
+        String msg = ConsoleColorsUtils.consoleColor(
+                ConsoleColorsUtils.BLUE_BACKGROUND_BRIGHT,
+                String.format("[INFO] - %s", text)
+        );
+
+        LoggerBuilder builder =  new LoggerBuilder(msg);
         builder.setLogType(LogType.INFO);
         return builder;
     }
 
     public static LoggerBuilder ERROR(String text, Exception e) {
-        LoggerBuilder builder =  new LoggerBuilder("[ERROR] - "+text+" "+ e.getMessage());
+        String msg = ConsoleColorsUtils.consoleColor(
+                ConsoleColorsUtils.RED_BACKGROUND_BRIGHT,
+                String.format("[ERROR] - %s: %s", text, e.getMessage())
+        );
+
+        LoggerBuilder builder =  new LoggerBuilder(msg);
         builder.setLogType(LogType.ERROR);
         builder.setExceptionHandle(e);
         return builder;
