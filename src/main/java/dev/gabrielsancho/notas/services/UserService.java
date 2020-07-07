@@ -28,7 +28,7 @@ public class UserService {
     }
 
     public User getLoggedUser(HttpServletRequest servletRequest) throws Exception {
-        String id = TokenSecurity.validateJwtToken(servletRequest.getHeader("authorization"));
+        String id = TokenSecurity.validateJwtToken(servletRequest.getHeader("Authorization"));
         return dao.getUserById(Long.parseLong(id));
     }
 }

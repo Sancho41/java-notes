@@ -1,5 +1,6 @@
 package dev.gabrielsancho.notas.persistence;
 
+import dev.gabrielsancho.notas.dtos.NoteDTO;
 import dev.gabrielsancho.notas.logs.LoggerBuilder;
 import dev.gabrielsancho.notas.model.Note;
 import dev.gabrielsancho.notas.model.User;
@@ -12,12 +13,17 @@ import java.util.List;
 
 public class NoteDAO {
 
-    public List<Note> getUserNotes(User user) {
+    public List<NoteDTO> getUserNotes(User user) {
         EntityManager em = HibernateUtils.createEntityManager();
 
         try {
-            String jpql = "Select n from Note n where n.user = :pUser";
-            TypedQuery<Note> query = em.createQuery(jpql, Note.class);
+            String jpql = "Select new dev.gabrielsancho.notas.dtos.NoteDTO(";
+            jpql += "n,";
+            jpql += "exists(select 1 from User u where n member of u.notesFavorited and u = :pUser)";
+            jpql += ")from Note n ";
+            jpql += "where n.user = :pUser";
+
+            TypedQuery<NoteDTO> query = em.createQuery(jpql, NoteDTO.class);
             query.setParameter("pUser", user);
 
             return query.getResultList();
@@ -50,10 +56,13 @@ public class NoteDAO {
         }
     }
 
-    public Note getNoteById(Long id) {
+    public NoteDTO getNoteById(Long id) {
         EntityManager em = HibernateUtils.createEntityManager();
         try {
-            return em.find(Note.class, id);
+            String jpql = "select new dev.gabrielsancho.notas.dtos.NoteDTO(n) from Note n where n.id = :pNoteId and n.is_public = true";
+            TypedQuery<NoteDTO> query = em.createQuery(jpql, NoteDTO.class);
+            query.setParameter("pNoteId", id);
+            return query.getSingleResult();
         } catch (Exception e){
             LoggerBuilder.ERROR(String.format("Não foi possível recuperar nota de id %d", id), e).log();
             em.getTransaction().rollback();
@@ -61,31 +70,52 @@ public class NoteDAO {
         } finally {
             em.close();
         }
-
     }
 
-    public Note update(Note note, User user) throws Exception {
+    public NoteDTO getNoteById(Long id, User user) {
+        EntityManager em = HibernateUtils.createEntityManager();
+        try {
+            String jpql = "select new dev.gabrielsancho.notas.dtos.NoteDTO(";
+            jpql += "n,";
+            jpql += "exists(select 1 from User u where n member of u.notesFavorited and u = :pUser)";
+            jpql += ") from Note n where n.id = :pNoteId and (n.is_public = true or n.user = :pUser)";
+            TypedQuery<NoteDTO> query = em.createQuery(jpql, NoteDTO.class);
+            query.setParameter("pNoteId", id);
+            query.setParameter("pUser", user);
+            return query.getSingleResult();
+        } catch (Exception e){
+            LoggerBuilder.ERROR(String.format("Não foi possível recuperar nota de id %d", id), e).log();
+            em.getTransaction().rollback();
+            throw (e);
+        } finally {
+            em.close();
+        }
+    }
+
+    public NoteDTO update(NoteDTO noteDTO, User user) throws Exception {
         EntityManager em = HibernateUtils.createEntityManager();
 
 
         try {
-            String jpql = "Select n from Note n where n = :pNote and n.user = :pUser";
+            String jpql = "Select n from Note n where n.id = :pNoteId and n.user = :pUser";
 
             Query query = em.createQuery(jpql);
-            query.setParameter("pNote", note);
+            query.setParameter("pNoteId", noteDTO.getId());
             query.setParameter("pUser", user);
-            query.getSingleResult();
+            Note note = (Note) query.getSingleResult();
 
             note.setUser(user);
+
+            note.updateFromDTO(noteDTO);
 
             em.getTransaction().begin();
             em.merge(note);
             em.getTransaction().commit();
 
-            return note;
+            return noteDTO;
         } catch (Exception e) {
             LoggerBuilder.ERROR(
-                    String.format("Não foi possível alterar a nota de id %d", note.getId()), e).log();
+                    String.format("Não foi possível alterar a nota de id %d", noteDTO.getId()), e).log();
             em.getTransaction().rollback();
             throw (e);
         } finally {
@@ -126,6 +156,57 @@ public class NoteDAO {
             return query.getResultList();
         } catch (Exception e) {
             LoggerBuilder.ERROR("Não foi possível recupar as notas públicas", e).log();
+            em.getTransaction().rollback();
+            throw (e);
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<NoteDTO> getPublicNotes(User user) {
+        EntityManager em = HibernateUtils.createEntityManager();
+        try {
+            String jpql = "Select new dev.gabrielsancho.notas.dtos.NoteDTO(";
+            jpql += "n,";
+            jpql += "exists(select 1 from User u where n member of u.notesFavorited and u = :pUser)";
+            jpql += ")from Note n ";
+            jpql += "where n.is_public = true";
+
+            TypedQuery<NoteDTO> query = em.createQuery(jpql, NoteDTO.class);
+            query.setParameter("pUser", user);
+            query.setMaxResults(10);
+            return query.getResultList();
+        } catch (Exception e) {
+            LoggerBuilder.ERROR("Não foi possível recupar as notas públicas", e).log();
+            em.getTransaction().rollback();
+            throw (e);
+        } finally {
+            em.close();
+        }
+    }
+
+    public NoteDTO favoriteNote(Long id, User user) throws Exception {
+        EntityManager em = HibernateUtils.createEntityManager();
+        try {
+
+            Note note = em.find(Note.class, id);
+
+            if (!(note.isIs_public() || note.getUser().equals(user))) {
+                throw new Exception("Não autorizado");
+            }
+
+            user = em.find(User.class, user.getId());
+            user.toggleFavorite(note);
+
+            em.getTransaction().begin();
+            em.merge(user);
+            em.getTransaction().commit();
+
+            return getNoteById(id, user);
+        } catch (Exception e) {
+            LoggerBuilder.ERROR(
+                    String.format("Não foi possível favoritar a nota de id %d com usuário de id %d", id, user.getId()),
+                    e).log();
             em.getTransaction().rollback();
             throw (e);
         } finally {

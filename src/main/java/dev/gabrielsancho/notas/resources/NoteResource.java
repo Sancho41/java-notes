@@ -63,16 +63,12 @@ public class NoteResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response show(@PathParam("id") Long id) {
-        Note note = service.getNote(id);
-
         try {
-            if (note.isIs_public()) {
-                return Response.ok(note).build();
-            } else {
+            try {
                 User loggedUser = userService.getLoggedUser(servletRequest);
-                if (note.getUser().equals(loggedUser))
-                    return Response.ok(note).build();
-                throw new Exception("Not authorized");
+                return Response.ok(service.getNoteById(id, loggedUser)).build();
+            } catch (Exception e) {
+                return Response.ok(service.getNoteById(id)).build();
             }
         } catch (Exception e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -85,7 +81,7 @@ public class NoteResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(@Context HttpHeaders headers, @PathParam("id") Long id, Note note) throws Exception {
+    public Response update(@Context HttpHeaders headers, @PathParam("id") Long id, NoteDTO note) throws Exception {
         try {
             User loggedUser = userService.getLoggedUser(headers);
             return Response.ok(service.updateNote(note, loggedUser)).build();
@@ -117,19 +113,22 @@ public class NoteResource {
     @Path("public")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response publicNotes() {
-        return Response.status(Response.Status.OK)
-                .entity(service.publicNotes())
-                .build();
+    public Response publicNotes(@Context HttpHeaders headers) {
+        try {
+            User user = userService.getLoggedUser(servletRequest);
+            return Response.ok(service.publicNotes(user)).build();
+        } catch (Exception e ) {
+            return Response.ok(service.publicNotes()).build();
+        }
     }
 
     @POST
-    @Path("favorite")
+    @Path("favorite/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response favoriteNote(@Context HttpHeaders headers, Note note) {
+    public Response favoriteNote(@Context HttpHeaders headers, @PathParam("id") Long id) {
         try {
             User user = userService.getLoggedUser(headers);
-            return Response.ok().entity(service.favorite(user, note)).build();
+            return Response.ok(service.favorite(user, id)).build();
         } catch (Exception e) {
             JSONObject object = new JSONObject();
             object.put("error", "unauthorized");

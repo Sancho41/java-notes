@@ -8,7 +8,7 @@ import dev.gabrielsancho.notas.persistence.NoteDAO;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,25 +16,27 @@ public class NoteService {
 
     public final NoteDAO dao = new NoteDAO();
 
-
-    private EntityManager createEntityManager () {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("notas");
-        return emf.createEntityManager();
-    }
-
     public List<Note> publicNotes() {
         return dao.getPublicNotes();
+    }
+
+    public List<NoteDTO> publicNotes(User user) {
+        return dao.getPublicNotes(user);
     }
 
     public Note create(NoteDTO note, User loggedUser) throws Exception {
         return dao.create(new Note(note, loggedUser));
     }
 
-    public Note getNote(Long id) {
+    public NoteDTO getNoteById(Long id) {
         return dao.getNoteById(id);
     }
 
-    public Note updateNote(Note note, User loggedUser) throws Exception {
+    public NoteDTO getNoteById(Long id, User loggedUser) {
+        return dao.getNoteById(id, loggedUser);
+    }
+
+    public NoteDTO updateNote(NoteDTO note, User loggedUser) throws Exception {
         return dao.update(note, loggedUser);
     }
 
@@ -42,15 +44,12 @@ public class NoteService {
         dao.delete(id, loggedUser);
     }
 
-    public List<Note> userNotes(User loggedUser) {
+    public List<NoteDTO> userNotes(User loggedUser) {
         return dao.getUserNotes(loggedUser);
     }
 
-    public Note favorite(User loggedUser, Note note) throws Exception {
-        if (note.isIs_public() || note.getUser().equals(loggedUser))
-            return note;
-
-        throw new Exception("not authorized");
+    public NoteDTO favorite(User loggedUser, Long id) throws Exception {
+        return dao.favoriteNote(id, loggedUser);
     }
 
     public ArrayList<Note> favorites(User user) {
