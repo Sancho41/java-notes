@@ -39,7 +39,7 @@ public class NoteResource {
     public Response index(@Context HttpHeaders headers) {
         try {
             User loggedUser = userService.getLoggedUser(headers);
-            return Response.status(Response.Status.OK).entity(service.userNotes(loggedUser)).build();
+            return Response.ok(service.userNotes(loggedUser)).build();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();

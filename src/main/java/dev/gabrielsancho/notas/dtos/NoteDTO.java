@@ -3,6 +3,8 @@ package dev.gabrielsancho.notas.dtos;
 import dev.gabrielsancho.notas.model.Note;
 import dev.gabrielsancho.notas.model.User;
 
+import java.time.LocalDate;
+
 public class NoteDTO {
     private Long id;
     private String title;
@@ -10,6 +12,7 @@ public class NoteDTO {
     private Boolean is_public;
     private String color;
     private User user;
+    private LocalDate created_at;
     private Boolean is_favorited;
 
     public NoteDTO() {
@@ -22,6 +25,7 @@ public class NoteDTO {
         this.is_public = note.isIs_public();
         this.color = note.getColor();
         this.user = note.getUser();
+        this.created_at = note.getCreated_at();
         this.is_favorited = is_favorited;
     }
 
@@ -32,6 +36,7 @@ public class NoteDTO {
         this.is_public = note.isIs_public();
         this.color = note.getColor();
         this.user = note.getUser();
+        this.created_at = note.getCreated_at();
     }
 
     public Long getId() {
@@ -80,6 +85,14 @@ public class NoteDTO {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public LocalDate getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(LocalDate created_at) {
+        this.created_at = created_at;
     }
 
     public Boolean getIs_favorited() {

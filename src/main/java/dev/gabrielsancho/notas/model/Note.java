@@ -3,6 +3,7 @@ package dev.gabrielsancho.notas.model;
 import dev.gabrielsancho.notas.dtos.NoteDTO;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -14,6 +15,7 @@ public class Note {
     private String text;
     private Boolean is_public;
     private String color;
+    private LocalDate created_at;
 
     @JoinColumn
     @ManyToOne
@@ -27,6 +29,7 @@ public class Note {
         this.text = note.getText();
         this.is_public = note.getIs_public();
         this.color = note.getColor();
+        this.created_at = LocalDate.now();
         this.user = loggedUser;
     }
 
@@ -76,6 +79,14 @@ public class Note {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDate getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(LocalDate created_at) {
+        this.created_at = created_at;
     }
 
     public void updateFromDTO(NoteDTO noteDTO) {
