@@ -2,10 +2,9 @@ package dev.gabrielsancho.notas.model;
 
 import dev.gabrielsancho.notas.dtos.RegisterUserDTO;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -30,12 +29,12 @@ public class User {
         this.password = registerUserDTO.getPassword();
     }
 
-//    @ManyToMany()
-//    @JoinTable(
-//            name = "note_user",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "note_id"))
-//    private List<Note> notesFavorited = new ArrayList<>();
+    @ManyToMany(fetch=FetchType.EAGER)
+    @JoinTable(
+            name = "favorited",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "note_id"))
+    private List<Note> notesFavorited = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -82,21 +81,10 @@ public class User {
         return Objects.hash(id);
     }
 
-//    public void addNotesFavorited(Note note) {
-//        notesFavorited.add(note);
-//        note.getFavorited().add(this);
-//    }
-//
-//    public void removeNotesFavorited(Note note) {
-//        notesFavorited.remove(note);
-//        note.getFavorited().remove(this);
-//    }
-//
-//    public List<Note> getNotesFavorited() {
-//        return notesFavorited;
-//    }
-//
-//    public void setNotesFavorited(List<Note> notesFavorited) {
-//        this.notesFavorited = notesFavorited;
-//    }
+    public void toggleFavorite(Note note) {
+        if (this.notesFavorited.contains(note))
+            this.notesFavorited.remove(note);
+        else
+            this.notesFavorited.add(note);
+    }
 }

@@ -3,6 +3,7 @@ package dev.gabrielsancho.notas.model;
 import dev.gabrielsancho.notas.dtos.NoteDTO;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Note {
@@ -28,9 +29,6 @@ public class Note {
         this.color = note.getColor();
         this.user = loggedUser;
     }
-
-//    @ManyToMany(mappedBy = "notesFavorited")
-//    private List<User> favorited = new ArrayList<>();
 
     public String getTitle() {
         return title;
@@ -80,11 +78,10 @@ public class Note {
         this.id = id;
     }
 
-//    public List<User> getFavorited() {
-//        return favorited;
-//    }
-//
-//    public void setUsers(ArrayList<User> favorited) {
-//        this.favorited = favorited;
-//    }
+    public void updateFromDTO(NoteDTO noteDTO) {
+        this.title = noteDTO.getTitle();
+        this.text = noteDTO.getText();
+        this.is_public = noteDTO.getIs_public();
+        this.color = noteDTO.getColor();
+    }
 }
