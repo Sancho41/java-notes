@@ -113,13 +113,15 @@ public class NoteResource {
     @Path("public")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response publicNotes(@Context HttpHeaders headers) {
-        // TODO: Adicionar paginação
+    public Response publicNotes(
+            @Context HttpHeaders headers,
+            @QueryParam("per_page") Long perPage,
+            @QueryParam("page") Long page) {
         try {
             User user = userService.getLoggedUser(servletRequest);
-            return Response.ok(service.publicNotes(user)).build();
+            return Response.ok(service.publicNotes(user, page, perPage)).build();
         } catch (Exception e ) {
-            return Response.ok(service.publicNotes()).build();
+            return Response.ok(service.publicNotes(page, perPage)).build();
         }
     }
 

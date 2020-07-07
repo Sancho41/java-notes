@@ -1,6 +1,7 @@
 package dev.gabrielsancho.notas.services;
 
 import dev.gabrielsancho.notas.dtos.NoteDTO;
+import dev.gabrielsancho.notas.dtos.NoteListDTO;
 import dev.gabrielsancho.notas.model.Note;
 import dev.gabrielsancho.notas.model.User;
 import dev.gabrielsancho.notas.persistence.NoteDAO;
@@ -16,12 +17,12 @@ public class NoteService {
 
     public final NoteDAO dao = new NoteDAO();
 
-    public List<Note> publicNotes() {
-        return dao.getPublicNotes();
+    public NoteListDTO publicNotes(Long page, Long perPage) {
+        return dao.getPublicNotes(page, perPage);
     }
 
-    public List<NoteDTO> publicNotes(User user) {
-        return dao.getPublicNotes(user);
+    public NoteListDTO publicNotes(User user, Long page, Long perPage) {
+        return dao.getPublicNotes(user, page, perPage);
     }
 
     public Note create(NoteDTO note, User loggedUser) throws Exception {

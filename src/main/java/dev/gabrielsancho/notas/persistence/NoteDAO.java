@@ -1,6 +1,7 @@
 package dev.gabrielsancho.notas.persistence;
 
 import dev.gabrielsancho.notas.dtos.NoteDTO;
+import dev.gabrielsancho.notas.dtos.NoteListDTO;
 import dev.gabrielsancho.notas.logs.LoggerBuilder;
 import dev.gabrielsancho.notas.model.Note;
 import dev.gabrielsancho.notas.model.User;
@@ -147,13 +148,27 @@ public class NoteDAO {
         }
     }
 
-    public List<Note> getPublicNotes() {
+    public NoteListDTO getPublicNotes(Long page, Long perPage) {
         EntityManager em = HibernateUtils.createEntityManager();
         try {
-            String jpql = "Select n from Note n where n.is_public = true";
-            TypedQuery<Note> query = em.createQuery(jpql, Note.class);
-            query.setMaxResults(10);
-            return query.getResultList();
+
+            Long qtd = (Long) em.createQuery(
+                    "Select count(*) from Note n where n.is_public = true").getSingleResult();
+
+            perPage = perPage == null || perPage < 0 ? qtd : perPage;
+            page = page == null || page < 0 ? 0 : page - 1;
+
+            Long lastPage = Math.round(Math.ceil(qtd.doubleValue() / perPage.doubleValue()));
+            Long firstResult = page * perPage;
+
+            String jpql = "Select new dev.gabrielsancho.notas.dtos.NoteDTO(n) from Note n where n.is_public = true";
+            TypedQuery<NoteDTO> query = em.createQuery(jpql, NoteDTO.class);
+            query.setMaxResults(perPage.intValue());
+            query.setFirstResult(firstResult.intValue());
+
+            List<NoteDTO> notes = query.getResultList();
+
+            return new NoteListDTO(page + 1, lastPage, notes);
         } catch (Exception e) {
             LoggerBuilder.ERROR("Não foi possível recupar as notas públicas", e).log();
             em.getTransaction().rollback();
@@ -163,19 +178,31 @@ public class NoteDAO {
         }
     }
 
-    public List<NoteDTO> getPublicNotes(User user) {
+    public NoteListDTO getPublicNotes(User user, Long page, Long perPage) {
         EntityManager em = HibernateUtils.createEntityManager();
         try {
-            String jpql = "Select new dev.gabrielsancho.notas.dtos.NoteDTO(";
-            jpql += "n,";
-            jpql += "exists(select 1 from User u where n member of u.notesFavorited and u = :pUser)";
-            jpql += ")from Note n ";
-            jpql += "where n.is_public = true";
+            String jpql = "Select %s from Note n where n.is_public = true";
 
-            TypedQuery<NoteDTO> query = em.createQuery(jpql, NoteDTO.class);
+            String select1 = "count(*)";
+            String select2 = "new dev.gabrielsancho.notas.dtos.NoteDTO(";
+            select2 += "n, exists(select 1 from User u where n member of u.notesFavorited and u = :pUser))";
+
+            Long qtd = em.createQuery(String.format(jpql, select1), Long.class).getSingleResult();
+
+            perPage = perPage == null || perPage < 0 ? qtd : perPage;
+            page = page == null || page < 0 ? 0 : page - 1;
+
+            Long lastPage = Math.round(Math.ceil(qtd.doubleValue() / perPage.doubleValue()));
+            Long firstResult = page * perPage;
+
+            TypedQuery<NoteDTO> query = em.createQuery(String.format(jpql, select2), NoteDTO.class);
             query.setParameter("pUser", user);
-            query.setMaxResults(10);
-            return query.getResultList();
+            query.setMaxResults(perPage.intValue());
+            query.setFirstResult(firstResult.intValue());
+
+            List<NoteDTO> notes = query.getResultList();
+
+            return new NoteListDTO(page + 1, lastPage, notes);
         } catch (Exception e) {
             LoggerBuilder.ERROR("Não foi possível recupar as notas públicas", e).log();
             em.getTransaction().rollback();
