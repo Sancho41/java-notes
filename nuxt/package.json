@@ -1,0 +1,37 @@
+{
+  "name": "notas_v2",
+  "version": "1.0.0",
+  "description": "notas",
+  "author": "Gabriel Sancho",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.26",
+    "@fortawesome/free-regular-svg-icons": "^5.12.0",
+    "@fortawesome/free-solid-svg-icons": "^5.12.0",
+    "@fortawesome/vue-fontawesome": "^0.1.9",
+    "@nuxtjs/auth": "^4.8.5",
+    "@nuxtjs/axios": "^5.9.2",
+    "@nuxtjs/dotenv": "^1.4.0",
+    "bootstrap": "^4.4.1",
+    "bootstrap-vue": "^2.0.0",
+    "node-sass": "^4.13.0",
+    "nuxt": "^2.0.0",
+    "nuxt-fontawesome": "^0.4.0",
+    "nuxt-sweetalert2": "^1.0.0",
+    "sass-loader": "^8.0.0",
+    "vue-textarea-autosize": "^1.1.1"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config": "^1.0.1",
+    "@nuxtjs/eslint-module": "^1.0.0",
+    "babel-eslint": "^10.0.1",
+    "vue-masonry-css": "^1.0.3"
+  }
+}
