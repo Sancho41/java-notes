@@ -114,6 +114,7 @@ public class NoteResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response publicNotes(@Context HttpHeaders headers) {
+        // TODO: Adicionar paginação
         try {
             User user = userService.getLoggedUser(servletRequest);
             return Response.ok(service.publicNotes(user)).build();
