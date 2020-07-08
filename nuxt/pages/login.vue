@@ -61,8 +61,8 @@ export default {
     return {
       loading: false,
       credentials: {
-        email: "gabriel.sancho13@gmail.com",
-        password: "123456"
+        email: "",
+        password: ""
       },
       errors: {}
     };
