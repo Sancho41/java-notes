@@ -11,7 +11,10 @@
           ref="noteForm"
         />
       </div>
-      <b-card-footer v-if="loggedInUser.id == note.user.id" footer-bg-variant="white">
+      <b-card-footer
+        v-if="loggedInUser && loggedInUser.id == note.user.id"
+        footer-bg-variant="white"
+      >
         <div class="note-view-card-footer">
           <b-button :disabled="loading" @click="edit = !edit">{{ edit ? 'Cancelar' : 'Editar' }}</b-button>
           <div v-if="edit">
@@ -33,6 +36,7 @@ import NoteForm from "../../components/notes/Form";
 import NoteShow from "../../components/notes/Show";
 import { mapGetters } from "vuex";
 export default {
+  auth: "guest",
   components: {
     NoteForm,
     NoteShow
@@ -53,7 +57,7 @@ export default {
     await $axios
       .get(`/notes/${params.id}`)
       .then(e => (data = e.data.data))
-      .catch(({ response }) => erro(reponse));
+      .catch(error);
     return {
       note: data
     };

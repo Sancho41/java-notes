@@ -97,6 +97,7 @@ export default {
     ...mapGetters(["loggedInUser"]),
     checkOwner() {
       if (!this.data) return true;
+      if (!this.loggedInUser) return false;
       return this.data.user.id == this.loggedInUser.id;
     }
   }

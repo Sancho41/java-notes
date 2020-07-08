@@ -113,45 +113,46 @@ export default {
     };
   },
   methods: {
-    register() {
+    async register() {
       this.loading = true;
 
       let redirect = this.redirect || "/";
 
-      this.$axios
-        .post("/register", this.credentials)
-        .then(() => {
-          this.$auth
-            .loginWith("local", {
-              data: this.credentials
-            })
-            .then(() => {
-              this.$swal.fire({
-                toast: true,
-                type: "success",
-                text: "Logado!",
-                showConfirmButton: false,
-                timer: 3000,
-                position: "top-end"
-              });
-              this.$router.push(redirect);
-            })
-            .catch(console.log);
-        })
-        .catch(e => {
-          this.errors = e.response.data.error;
-          this.$swal.fire({
-            toast: true,
-            type: "error",
-            text: "Erro ao tentar efetuar registro!",
-            showConfirmButton: false,
-            timer: 3000,
-            position: "top-end"
+      try {
+        const { data } = await this.$axios.post("/register", this.credentials);
+        this.$auth
+          .loginWith("local", {
+            data: this.credentials
+          })
+          .then(() => {
+            this.$swal.fire({
+              toast: true,
+              type: "success",
+              text: "Logado!",
+              showConfirmButton: false,
+              timer: 3000,
+              position: "top-end"
+            });
+            this.$router.push(redirect);
           });
-        })
-        .then(() => {
-          this.loading = false;
+      } catch ({ response }) {
+        // this.errors = e.response.data.error;
+        let text =
+          response.status == 401
+            ? "Email já registrado"
+            : "Erro ao tentar efetuar registro!";
+
+        this.$swal.fire({
+          toast: true,
+          type: "error",
+          text,
+          showConfirmButton: false,
+          timer: 3000,
+          position: "top-end"
         });
+      } finally {
+        this.loading = false;
+      }
     },
     resetError(field) {
       this.errors[field] = [];

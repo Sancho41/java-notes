@@ -84,20 +84,18 @@ export default {
           position: "top-end"
         });
         this.$router.push(redirect);
-      } catch (error) {
-        const { response } = error;
-        if (response) {
-          const { status, statusText, data } = response;
-          if (status == 401) this.errors = response.data.error;
-          else {
-            this.$swal.fire({
-              title: status,
-              type: "error",
-              text: statusText,
-              timer: 5000
-            });
-          }
-        }
+      } catch ({ response }) {
+        const text =
+          response.status == 401
+            ? "Email ou senha incorretos!"
+            : "Não foi possível efetuar o login!";
+
+        this.$swal.fire({
+          title: response.status,
+          type: "error",
+          text,
+          timer: 5000
+        });
       } finally {
         this.loading = false;
       }
