@@ -105,7 +105,7 @@ export default {
    * Generate configuration
    * */
   generate: {
-    dir: '../java/src/main/webapp',
+    dir: '../webapp',
   },
   /*
    ** Build configuration
