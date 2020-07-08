@@ -2,7 +2,7 @@
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Sancho41/java-notes)
 
-Este é um projeto utilizando Jersey, JAX-rs e Vue.js de um sistemas de notas de lembretes que foi feito um deploy no heroku.
+Este é um projeto utilizando **Java** e **Javascript** de um sistemas de notas de lembretes que foi feito um deploy no heroku.
 
 [Clique aqui](https://java-notes-sancho.herokuapp.com/) para acessar uma instância no [Heroku](https://heroku.com/)
 
