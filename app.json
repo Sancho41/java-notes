@@ -1,0 +1,7 @@
+{
+  "name": "EscreveAí",
+  "description": "App de Notas e lembretes feito em java e em Nuxt",
+  "repository": "https://github.com/Sancho41/java-notes",
+  "logo": "https://java-notes-sancho.herokuapp.com/favicon.ico",
+  "keywords": ["Jersey", "JAX-rs", "Vue", "NUXT"]
+}
