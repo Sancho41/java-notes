@@ -2,23 +2,23 @@ package dev.gabrielsancho.notas.dtos;
 
 public class ResponseDTO {
 
-    private Integer stauts;
+    private Integer status;
     private Object data;
 
     public ResponseDTO() {
     }
 
-    public ResponseDTO(Integer stauts, Object data) {
-        this.stauts = stauts;
+    public ResponseDTO(Integer status, Object data) {
+        this.status = status;
         this.data = data;
     }
 
-    public Integer getStauts() {
-        return stauts;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setStauts(Integer stauts) {
-        this.stauts = stauts;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Object getData() {
