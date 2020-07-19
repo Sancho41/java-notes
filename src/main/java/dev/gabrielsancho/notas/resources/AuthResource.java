@@ -56,18 +56,20 @@ public class AuthResource {
     @PermitAll
     @Path("register")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response register(RegisterUserDTO registerUserDTO) {
         try {
             User user = service.registra(registerUserDTO);
             return Response.status(Response.Status.CREATED).entity(user).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("register failed").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("register failed").build();
         }
     }
 
     @POST
     @PermitAll
     @Path("logout")
+    @Produces(MediaType.APPLICATION_JSON)
     public String logout(User user) {
         return servletRequest.getHeader("Authorization");
     }
