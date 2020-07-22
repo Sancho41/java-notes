@@ -1,5 +1,7 @@
 # Projeto EscreveAí 
 
+![alt](docs/home.png)
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Sancho41/java-notes)
 
 Este é um projeto utilizando **Java** e **Javascript** de um sistemas de notas de lembretes que foi feito um deploy no heroku.
@@ -15,6 +17,18 @@ No frontend foi utilizado basicamente [Vue.js](https://vuejs.org/) utilizando a 
 
 ### Banco de dados
 A aplicação utiliza um arquivo de sqlite como banco de dados. Essa escolha foi feita para minizar as preocupações com outras tecnologias, assim focando o aprendizado no JAVA e suas bibliotecas.
+
+# Screenshots:
+
+|            Home             |          Login           |          register           |
+| :-------------------------: | :----------------------: | :-------------------------: |
+| ![Home Page](docs/home.png) | ![Login](docs/login.png) | ![Login](docs/register.png) |
+
+|            Public             |          My Notes           |
+| :---------------------------: | :-------------------------: |
+| ![Home Page](docs/public.png) | ![Login](docs/my_notes.png) |
+  
+
 
 ## Executando o projeto localmente
 
